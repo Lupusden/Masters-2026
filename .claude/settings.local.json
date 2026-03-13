@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(open:*)",
+      "WebFetch(domain:www.pgatour.com)",
+      "WebFetch(domain:sportscroll.com)",
+      "WebFetch(domain:www.golfdigest.com)",
+      "WebFetch(domain:www.flashscoreusa.com)",
+      "WebFetch(domain:heavy.com)",
+      "Bash(python3 -c \"\nimport json, sys\n\nwith open\\(''/Users/andrewwalton/.claude.json'', ''r''\\) as f:\n    data = json.load\\(f\\)\n\ndata[''mcpServers''] = {\n    ''playwright'': {\n        ''command'': ''npx'',\n        ''args'': [''-y'', ''@playwright/mcp@latest''],\n        ''type'': ''stdio''\n    }\n}\n\nwith open\\(''/Users/andrewwalton/.claude.json'', ''w''\\) as f:\n    json.dump\\(data, f, indent=2\\)\n\nprint\\(''Done''\\)\n\")",
+      "Bash(python3:*)",
+      "Bash(playwright:*)",
+      "Bash(npx playwright --version)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(bun:*)",
+      "Bash(brew:*)",
+      "Bash(npx --version:*)",
+      "Bash(npx @playwright/mcp:*)",
+      "Bash(claude mcp list:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_handle_dialog",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_console_messages",
+      "Bash(gh auth:*)"
+    ]
+  }
+}

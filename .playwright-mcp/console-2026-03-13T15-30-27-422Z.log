@@ -1,0 +1,8 @@
+[   35824ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://a.espncdn.com/i/golf/tournaments/logo/13.png:0
+[   35832ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://a.espncdn.com/combiner/i?img=/i/teamlogos/golf/500/pga.png:0
+[   35834ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://a.espncdn.com/combiner/i?img=/i/golf/pga_tour/2014/tournament_logos/players_championship.jpg:0
+[   35847ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://a.espncdn.com/i/golf/tournaments/logo/401811937.png:0
+[   35849ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://a.espncdn.com/i/leaguelogos/golf/500/pga.png:0
+[   81012ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://a.espncdn.com/combiner/i?img=/i/golf/pga_tour/2014/tournament_logos/players_championship.jpg:0
+[   81089ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://a.espncdn.com/i/leaguelogos/golf/500/pga.png:0
+[   81233ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://a.espncdn.com/combiner/i?img=/i/leaguelogos/golf/500/pga.png&h=80&w=80:0

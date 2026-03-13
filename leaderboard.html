@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pool Ranking · Fantasy Pool 2026</title>
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <style>
+    .chip-stats {
+      display: flex; gap: 5px; flex-wrap: wrap;
+      margin-top: 3px; align-items: center;
+    }
+    .chip-score { font-size: 0.73rem; font-weight: 700; }
+    .chip-score.under { color: #1a8a3c; }
+    .chip-score.over  { color: #ff3b30; }
+    .chip-score.even  { color: var(--text-muted); }
+    .chip-pos {
+      font-size: 0.68rem; font-weight: 500; color: var(--text-muted);
+      background: var(--border-light); border-radius: 4px; padding: 1px 5px;
+    }
+    .chip-prize { font-size: 0.68rem; color: var(--text-muted); }
+    .chip-country { font-size: 0.67rem; color: var(--text-muted); white-space: nowrap; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="pga-logo">
+      <div class="pga-badge"><span>PGA</span>TOUR</div>
+      <div class="t-logo-pill" id="tournamentBadge"></div>
+      <div class="tournament-name">
+        <div class="t-name">AT&amp;T Pebble Beach Pro-Am</div>
+        <div class="t-sub">FANTASY POOL · 2026 SEASON</div>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="purse.html">Purse</a>
+      <a href="picks.html">Make Picks</a>
+      <a href="leaderboard.html" class="active">Ranking</a>
+      <a href="admin.html" class="nav-admin">Leaderboard</a>
+    </nav>
+  </div>
+</header>
+<script>
+(function(){
+  try {
+    const meta = JSON.parse(localStorage.getItem('pebblebeach2026_tournamentmeta') || 'null');
+    if (meta && meta.name) { const el = document.querySelector('.t-name'); if (el) el.textContent = meta.name; }
+    if (meta && meta.name) { const b = document.getElementById('tournamentBadge'); if (b) { b.textContent = meta.name.replace(/championship|tournament|pro-am/gi,'').trim(); b.style.display = 'block'; } }
+    if (meta && meta.name) { const f = document.getElementById('footerEl'); if (f) f.textContent = '2026 ' + meta.name + ' Fantasy Pool'; }
+  } catch(e) {}
+})();
+</script>
+
+<main>
+  <!-- Stats strip -->
+  <div class="stat-strip" id="statStrip">
+    <div class="stat-card"><div class="sc-value" id="statEntries">0</div><div class="sc-label">Entries</div></div>
+    <div class="stat-card"><div class="sc-value" id="statLeader" style="font-size:1rem">—</div><div class="sc-label">Current Leader</div></div>
+    <div class="stat-card"><div class="sc-value" id="statPrize" style="font-size:1.1rem">—</div><div class="sc-label">Leader's Prize Total</div></div>
+  </div>
+
+  <!-- Live sync bar -->
+  <div id="syncBar" style="background:#fff;border-radius:10px;padding:12px 20px;margin-bottom:16px;box-shadow:0 1px 4px rgba(6,42,74,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span class="live-pill"><span class="live-dot"></span>ESPN LIVE</span>
+      <span id="syncStatus" style="font-size:.82rem;color:var(--text-muted)">Click Sync to pull latest scores from ESPN PGA Tour</span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span id="lastSyncLabel" style="font-size:.78rem;color:var(--text-muted)"></span>
+      <button class="btn btn-navy btn-sm" id="syncBtn" onclick="doSync()">⬇ Sync Live Scores</button>
+      <a href="picks.html" class="btn btn-gold btn-sm">+ Add Entry</a>
+    </div>
+  </div>
+
+  <!-- Header + controls -->
+  <div class="lb-header">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <h2>Pool Standings</h2>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="center">Rank</th>
+          <th>Participant</th>
+          <th>Player 1</th>
+          <th>Player 2</th>
+          <th>Player 3</th>
+          <th>Player 4</th>
+          <th class="center">Prize Total</th>
+          <th class="center" id="thR4">R4 Score</th>
+          <th class="center">Delete</th>
+        </tr>
+      </thead>
+      <tbody id="lbBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Legend -->
+  <div style="margin-top:14px;font-size:0.8rem;color:var(--text-muted)">
+    <span class="tb-badge">TB</span> = tiebreaker decided this rank &nbsp;·&nbsp;
+    <span class="player-chip tb-chip">★ Name</span> = designated tiebreaker player &nbsp;·&nbsp;
+    Prize based on current standings (tie-split applied)
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<footer id="footerEl">
+  2026 Fantasy Pool
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/data.js?v=6"></script>
+<script src="js/db.js?v=1"></script>
+<script src="js/livescores.js?v=11"></script>
+<script src="js/leaderboard.js?v=19"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make Picks · Pebble Beach Pool 2026</title>
+  <link rel="stylesheet" href="css/style.css?v=12">
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="pga-logo">
+      <div class="pga-badge"><span>PGA</span>TOUR</div>
+      <div class="t-logo-pill" id="tournamentBadge"></div>
+      <div class="tournament-name">
+        <div class="t-name">AT&amp;T Pebble Beach Pro-Am</div>
+        <div class="t-sub">FANTASY POOL · 2026 SEASON</div>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="purse.html">Purse</a>
+      <a href="picks.html" class="active">Make Picks</a>
+      <a href="leaderboard.html">Ranking</a>
+      <a href="admin.html" class="nav-admin">Leaderboard</a>
+    </nav>
+  </div>
+</header>
+<script>
+(function(){
+  try {
+    const meta = JSON.parse(localStorage.getItem('pebblebeach2026_tournamentmeta') || 'null');
+    if (meta && meta.name) { const el = document.querySelector('.t-name'); if (el) el.textContent = meta.name; }
+    if (meta && meta.name) { const b = document.getElementById('tournamentBadge'); if (b) { b.textContent = meta.name.replace(/championship|tournament|pro-am/gi,'').trim(); b.style.display = 'block'; } }
+    if (meta && meta.name) { const f = document.getElementById('footerEl'); if (f) f.textContent = '2026 ' + meta.name + ' Fantasy Pool'; }
+  } catch(e) {}
+})();
+</script>
+
+<main>
+  <!-- Top bar: name + submit -->
+  <div class="picks-top">
+    <div class="picks-top-left">
+      <h2>Select Your 4 Players</h2>
+      <p>Click the <strong>+</strong> button on a player's card to add them. Then designate 1 as your tiebreaker.</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div class="name-row">
+        <label for="participantName">Your Name:</label>
+        <input type="text" id="participantName" placeholder="Enter your name…" maxlength="40" autocomplete="off">
+      </div>
+      <button class="btn btn-gold" id="submitBtn" disabled>Save Picks ✓</button>
+    </div>
+  </div>
+
+  <!-- Status + steps -->
+  <div class="picks-status">
+    <div class="pick-count-label">Selected: <span class="pick-count-num" id="countDisplay">0</span> / 4</div>
+    <div class="steps">
+      <div class="step-pill active" id="step1Pill">Step 1: Pick 4</div>
+      <div class="step-pill" id="step2Pill">Step 2: Set Tiebreaker</div>
+    </div>
+  </div>
+
+  <!-- Tiebreaker prompt -->
+  <div class="tb-prompt" id="tbPrompt">
+    ⭐ Click <strong>☆ Set as Tiebreaker</strong> on one of your 4 selected players.
+    Use <strong>✕</strong> to remove a player from your picks.
+    The tiebreaker is only used if another participant picks the exact same 4 players.
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="Search player name…" autocomplete="off">
+    <select id="sortSelect">
+      <option value="rank">Sort by Tournament Standing</option>
+      <option value="world">Sort by World Ranking</option>
+      <option value="name">Sort by Name (A–Z)</option>
+      <option value="prize">Sort by Projected Prize</option>
+    </select>
+  </div>
+
+  <!-- Player grid -->
+  <div class="players-grid" id="playersGrid"></div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<footer id="footerEl">
+  2026 Fantasy Pool
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/data.js?v=6"></script>
+<script src="js/db.js?v=1"></script>
+<script src="js/livescores.js?v=11"></script>
+<script src="js/picks.js?v=11"></script>
+</body>
+</html>

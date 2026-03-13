@@ -1,0 +1,7 @@
+[     226ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8081/favicon.ico:0
+[    2628ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://brlmebonzrnvjfyzbmbu.supabase.co/rest/v1/scores?select=*:0
+[    2629ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://brlmebonzrnvjfyzbmbu.supabase.co/rest/v1/entries?select=*&order=ts.asc:0
+[    2630ms] [WARNING] [db] entries fetch: Could not find the table 'public.entries' in the schema cache @ http://localhost:8081/js/db.js?v=1:26
+[    2630ms] [WARNING] [db] scores fetch: Could not find the table 'public.scores' in the schema cache @ http://localhost:8081/js/db.js?v=1:27
+[    3250ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://brlmebonzrnvjfyzbmbu.supabase.co/rest/v1/scores?on_conflict=player_name&columns=%22player_name%22%2C%22r1%22%2C%22r2%22%2C%22r3%22%2C%22r4%22:0
+[    3251ms] [WARNING] [db] saveScores: Could not find the table 'public.scores' in the schema cache @ http://localhost:8081/js/db.js?v=1:82

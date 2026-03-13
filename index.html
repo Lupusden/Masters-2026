@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fantasy Pool · 2026 Season</title>
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <style>
+    .home-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      color: #fff; border-radius: var(--radius-lg);
+      padding: 36px 40px; margin-bottom: 28px;
+    }
+    .home-hero h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+    .home-hero p  { opacity: .8; font-size: 0.9rem; margin-bottom: 20px; }
+    .hero-meta { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; }
+    .hero-meta-item { font-size: 0.82rem; opacity: .75; }
+    .hero-meta-item strong { display: block; font-size: 1rem; opacity: 1; margin-bottom: 2px; }
+    .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .home-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+
+    .live-snapshot { margin-bottom: 32px; }
+    .live-snapshot h3 { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .snap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+    .snap-card {
+      background: var(--card-bg); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); padding: 14px 16px;
+      border-top: 3px solid var(--border);
+    }
+    .snap-card.leader { border-top-color: var(--gold); }
+    .snap-pos  { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+    .snap-name { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin: 2px 0; }
+    .snap-score { font-size: 1.1rem; font-weight: 800; }
+    .snap-score.under { color: #16a34a; }
+    .snap-score.over  { color: #dc2626; }
+    .snap-score.even  { color: var(--navy); }
+    .snap-thru { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+    .rules-section { margin-bottom: 32px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="pga-logo">
+      <div class="pga-badge"><span>PGA</span>TOUR</div>
+      <div class="t-logo-pill" id="tournamentBadge"></div>
+      <div class="tournament-name">
+        <div class="t-name" id="headerTName">PGA Tour</div>
+        <div class="t-sub">FANTASY POOL · 2026 SEASON</div>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="purse.html">Purse</a>
+      <a href="picks.html">Make Picks</a>
+      <a href="leaderboard.html">Ranking</a>
+      <a href="admin.html" class="nav-admin">Leaderboard</a>
+    </nav>
+  </div>
+</header>
+
+<main class="home-wrap">
+  <div class="home-hero">
+    <h2 id="heroTName">PGA Tour Fantasy Pool</h2>
+    <p id="heroSubtitle">Loading tournament info…</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong id="heroVenue">—</strong>Venue</div>
+      <div class="hero-meta-item"><strong id="heroStatus">—</strong>Status</div>
+      <div class="hero-meta-item"><strong id="heroLastSync">—</strong>Last Synced</div>
+    </div>
+    <div class="hero-buttons">
+      <a href="picks.html" class="btn btn-gold">Make Your Picks</a>
+      <a href="leaderboard.html" class="btn btn-ghost" style="border-color:rgba(255,255,255,.4);color:#fff">View Standings ↗</a>
+    </div>
+  </div>
+
+  <!-- Live leaderboard snapshot -->
+  <div class="live-snapshot">
+    <h3>
+      <span class="live-pill" id="livePill" style="display:none"><span class="live-dot"></span>LIVE</span>
+      Current Tournament Leaders
+    </h3>
+    <div class="snap-grid" id="snapGrid">
+      <div style="color:var(--text-muted);font-size:0.85rem;padding:8px">Sync the leaderboard to see live standings.</div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <h2 class="section-heading rules-section">How the Pool Works</h2>
+  <div class="rules-grid" style="margin-bottom:40px">
+    <div class="rule-card">
+      <h3>1 · Pick 4 Players</h3>
+      <p>Select any <strong>4 professionals</strong> from the field. Use the <strong>+</strong> button on each player tile to add them to your picks.</p>
+    </div>
+    <div class="rule-card">
+      <h3>2 · Designate a Tiebreaker</h3>
+      <p>Mark <strong>1 of your 4 players</strong> as your personal tiebreaker. This is used only if another participant picks the exact same 4 players.</p>
+    </div>
+    <div class="rule-card">
+      <h3>3 · Win on Prize Money</h3>
+      <p>The participant whose 4 players earn the most <strong>combined prize money</strong> wins the pool. Prize is calculated live based on current standings.</p>
+    </div>
+    <div class="rule-card">
+      <h3>Tiebreaker Rules</h3>
+      <p><strong>Different players, same prize total:</strong> Lowest Sunday (R4) score among your 4 players wins.<br><br>
+      <strong>Identical 4-player picks:</strong> Designated tiebreaker player's Sunday score decides it.</p>
+    </div>
+  </div>
+</main>
+
+<footer id="footerEl">
+  2026 PGA Tour Fantasy Pool
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/data.js?v=6"></script>
+<script src="js/db.js?v=1"></script>
+<script src="js/livescores.js?v=11"></script>
+<script>
+(function () {
+  // ── Load tournament meta from localStorage ──────────────
+  function loadMeta() {
+    try { return JSON.parse(localStorage.getItem('pebblebeach2026_tournamentmeta') || 'null'); } catch(e) { return null; }
+  }
+  function loadSyncInfo() {
+    try { return JSON.parse(localStorage.getItem('pebblebeach2026_lastsync') || 'null'); } catch(e) { return null; }
+  }
+
+  function timeSinceMs(ms) {
+    if (!ms) return 'Never';
+    const s = Math.floor((Date.now() - ms) / 1000);
+    if (s < 60)   return s + 's ago';
+    if (s < 3600) return Math.floor(s / 60) + 'm ago';
+    return Math.floor(s / 3600) + 'h ago';
+  }
+
+  function updateHeader() {
+    const meta = loadMeta();
+    const name = (meta && meta.name) ? meta.name : 'PGA Tour Fantasy Pool';
+
+    document.getElementById('headerTName').textContent = name;
+    document.getElementById('heroTName').textContent   = name + ' · Fantasy Pool';
+    document.getElementById('heroSubtitle').textContent = 'Pick 4 players — most combined prize money wins!';
+
+    const venueEl = document.getElementById('heroVenue');
+    const venueItem = venueEl && venueEl.closest('.hero-meta-item');
+    if (meta && meta.venue) {
+      venueEl.textContent = meta.venue;
+    } else if (venueItem) {
+      venueItem.style.display = 'none';
+    }
+    document.getElementById('heroStatus').textContent = (meta && meta.status) ? meta.status : '—';
+    document.getElementById('heroLastSync').textContent = timeSinceMs(meta && meta.lastSync);
+    document.getElementById('footerEl').textContent = '2026 ' + name + ' Fantasy Pool';
+
+    // Tournament badge
+    const badge = document.getElementById('tournamentBadge');
+    if (badge && meta && meta.name) {
+      badge.textContent = meta.name.replace(/championship|tournament|pro-am/gi, '').trim();
+      badge.style.display = 'block';
+    }
+  }
+
+  function formatStp(stp) {
+    if (stp === null || stp === undefined) return { str: '—', cls: 'even' };
+    if (stp === 0) return { str: 'E', cls: 'even' };
+    if (stp < 0)  return { str: String(stp), cls: 'under' };
+    return { str: '+' + stp, cls: 'over' };
+  }
+
+  function renderSnapshot() {
+    const players = getPlayers();
+    if (!players || players.length === 0) return;
+
+    // Sort by scoreToPar
+    const sorted = [...players].sort((a, b) => {
+      const sa = scoreToPar(a), sb = scoreToPar(b);
+      if (sa === null && sb === null) return 0;
+      if (sa === null) return 1;
+      if (sb === null) return -1;
+      return sa - sb;
+    });
+
+    // Check if any are live
+    const anyLive = sorted.some(p => p.liveTopar !== null && p.liveTopar !== undefined);
+    const livePill = document.getElementById('livePill');
+    if (anyLive) livePill.style.display = '';
+
+    const top = sorted.slice(0, 8);
+    const grid = document.getElementById('snapGrid');
+    grid.innerHTML = '';
+
+    // Compute positions
+    let posIdx = 0;
+    const posMap = {};
+    while (posIdx < sorted.length) {
+      const sp = scoreToPar(sorted[posIdx]);
+      if (sp === null) break;
+      let j = posIdx;
+      while (j < sorted.length - 1 && scoreToPar(sorted[j+1]) === sp) j++;
+      const label = j > posIdx ? 'T' + (posIdx+1) : String(posIdx+1);
+      for (let k = posIdx; k <= j; k++) posMap[sorted[k].name] = label;
+      posIdx = j + 1;
+    }
+
+    top.forEach((p, i) => {
+      const stp = scoreToPar(p);
+      if (stp === null) return;
+      const { str, cls } = formatStp(stp);
+      const pos = posMap[p.name] || (i + 1);
+      const thruParts = [];
+      if (p.liveThru != null && p.liveThru > 0) thruParts.push('Thru ' + p.liveThru);
+      else {
+        const rp = [p.r1,p.r2,p.r3,p.r4].filter(r => r !== null).length;
+        if (rp > 0) thruParts.push('Thru R' + rp);
+      }
+      const nameParts = p.name.split(' ');
+      const displayName = nameParts.length > 1
+        ? nameParts[0][0] + '. ' + nameParts.slice(-1)[0]
+        : p.name;
+      const card = document.createElement('div');
+      card.className = 'snap-card' + (i === 0 ? ' leader' : '');
+      card.innerHTML = `
+        <div class="snap-pos">${pos}</div>
+        <div class="snap-name">${displayName}</div>
+        <div class="snap-score ${cls}">${str}</div>
+        <div class="snap-thru">${thruParts.join(' · ') || '—'}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  (window.dbReady || Promise.resolve()).then(function () {
+    updateHeader();
+    renderSnapshot();
+    if (window.syncLiveScores) {
+      syncLiveScores(() => {})
+        .then(() => { updateHeader(); renderSnapshot(); })
+        .catch(() => {});
+    }
+  });
+}());
+</script>
+</body>
+</html>

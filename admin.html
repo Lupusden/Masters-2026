@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard · Fantasy Pool 2026</title>
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <style>
+    .admin-wrap { max-width: 1280px; margin: 0 auto; padding: 28px 24px; }
+    .admin-hero {
+      background: var(--navy);
+      color: #fff; border-radius: var(--radius-lg);
+      padding: 22px 28px; margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+    }
+    .admin-hero h2 { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.02em; }
+    .admin-hero p  { font-size: 0.82rem; color: rgba(255,255,255,.55); margin-top: 3px; }
+    .score-table-wrap {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow); overflow: hidden; overflow-x: auto;
+      border: 1px solid var(--border-light);
+    }
+    .score-table { width: 100%; border-collapse: collapse; min-width: 700px; }
+    .score-table thead { background: var(--bg); border-bottom: 1px solid var(--border); }
+    .score-table thead th {
+      padding: 10px 12px; color: var(--text-muted);
+      font-size: 0.71rem; font-weight: 600; text-transform: uppercase; letter-spacing: .4px;
+      text-align: left;
+    }
+    .score-table thead th.ctr { text-align: center; }
+    .score-table tbody tr { border-bottom: 1px solid var(--border-light); transition: background .1s; }
+    .score-table tbody tr:hover { background: #fafafe; }
+    .score-table tbody tr:last-child { border-bottom: none; }
+    .score-table td { padding: 7px 12px; font-size: 0.84rem; vertical-align: middle; }
+    .score-table td.ctr { text-align: center; }
+    .rank-col { font-weight: 600; color: var(--text-muted); width: 44px; text-align: center; }
+    .player-col { font-weight: 600; color: var(--text); }
+    .world-col { color: var(--text-muted); font-size: 0.78rem; }
+    .r-input {
+      width: 54px; padding: 5px 6px; border: 1.5px solid var(--border);
+      border-radius: 7px; font-size: 0.84rem; font-family: inherit;
+      text-align: center; outline: none;
+    }
+    .r-input:focus { border-color: var(--blue); }
+    .r-input.filled { border-color: var(--green); background: var(--green-light); }
+    .r-input.empty  { border-color: var(--border); background: #fff; }
+    .par-col { font-size: 0.82rem; font-weight: 600; }
+    .save-row-btn {
+      background: none; border: 1.5px solid var(--border); border-radius: 7px;
+      padding: 4px 10px; font-size: 0.73rem; cursor: pointer; color: var(--text-muted);
+      transition: background .15s, color .15s, border-color .15s;
+      font-family: inherit;
+    }
+    .save-row-btn:hover { background: var(--green-light); color: var(--green); border-color: var(--green); }
+    .save-all-bar {
+      background: var(--card-bg); border-radius: var(--radius);
+      padding: 14px 18px; margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .round-tabs { display: flex; gap: 5px; }
+    .rtab {
+      padding: 6px 16px; border-radius: 980px;
+      font-size: 0.82rem; font-weight: 500; border: 1.5px solid var(--border);
+      cursor: pointer; transition: background .15s, color .15s, border-color .15s;
+      background: var(--white); color: var(--text-muted); font-family: inherit;
+    }
+    .rtab.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .rtab.has-data { border-color: var(--green); color: var(--green); }
+    .rtab.active.has-data { background: var(--green); border-color: var(--green); color: #fff; }
+    .status-bar { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+    .status-item { font-size: 0.78rem; color: var(--text-muted); }
+    .status-item strong { color: var(--text); font-weight: 600; }
+    .par-display { font-size: 0.8rem; font-weight: 600; }
+    .par-under { color: #1a8a3c; }
+    .par-over  { color: var(--text-muted); }
+    .par-even  { color: var(--text-muted); }
+    .round-cell-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .round-topar { font-size: 0.68rem; font-weight: 600; line-height: 1; }
+    .round-topar.under { color: #1a8a3c; }
+    .round-topar.over  { color: #ff3b30; }
+    .round-topar.even  { color: var(--text-muted); }
+    .thru-badge { font-size: 0.7rem; background: var(--blue-light); color: #004aad; padding: 2px 6px; border-radius: 980px; font-weight: 500; white-space: nowrap; }
+    .live-par   { font-size: 0.7rem; font-weight: 600; margin-top: 2px; }
+    .live-round-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .live-par.under { color: #1a8a3c; }
+    .live-par.over  { color: #ff3b30; }
+    .live-par.even  { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="pga-logo">
+      <div class="pga-badge"><span>PGA</span>TOUR</div>
+      <div class="t-logo-pill" id="tournamentBadge"></div>
+      <div class="tournament-name">
+        <div class="t-name">AT&amp;T Pebble Beach Pro-Am</div>
+        <div class="t-sub">FANTASY POOL · 2026 SEASON</div>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="purse.html">Purse</a>
+      <a href="picks.html">Make Picks</a>
+      <a href="leaderboard.html">Ranking</a>
+      <a href="admin.html" class="active nav-admin">Leaderboard</a>
+    </nav>
+  </div>
+</header>
+<script>
+(function(){
+  try {
+    const meta = JSON.parse(localStorage.getItem('pebblebeach2026_tournamentmeta') || 'null');
+    if (meta && meta.name) { const el = document.querySelector('.t-name'); if (el) el.textContent = meta.name; }
+    if (meta && meta.name) { const b = document.getElementById('tournamentBadge'); if (b) { b.textContent = meta.name.replace(/championship|tournament|pro-am/gi,'').trim(); b.style.display = 'block'; } }
+    if (meta && meta.name) { const f = document.getElementById('footerEl'); if (f) f.textContent = '2026 ' + meta.name + ' Fantasy Pool · Score Admin'; }
+  } catch(e) {}
+})();
+</script>
+
+<main class="admin-wrap">
+  <div class="admin-hero">
+    <div>
+      <h2>Score Admin Panel</h2>
+      <p>Enter player scores after each round. The leaderboard updates automatically.</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-navy btn-sm" id="adminSyncBtn" onclick="adminSync()">⬇ Sync Live Scores (ESPN)</button>
+      <a href="leaderboard.html" class="btn btn-ghost btn-sm" style="border-color:rgba(255,255,255,.3);color:#fff">View Leaderboard ↗</a>
+    </div>
+  </div>
+
+  <!-- Round tabs + status -->
+  <div class="save-all-bar">
+    <div class="round-tabs">
+      <button class="rtab" id="tabR1" onclick="switchRound(1)">Round 1</button>
+      <button class="rtab" id="tabR2" onclick="switchRound(2)">Round 2</button>
+      <button class="rtab" id="tabR3" onclick="switchRound(3)">Round 3</button>
+      <button class="rtab" id="tabR4" onclick="switchRound(4)">Round 4 (Sunday)</button>
+    </div>
+    <div class="status-bar" id="statusBar"></div>
+  </div>
+
+  <!-- Score table -->
+  <div class="score-table-wrap">
+    <table class="score-table">
+      <thead>
+        <tr>
+          <th class="ctr" style="width:44px">Pos</th>
+          <th>Player</th>
+          <th class="ctr" style="width:40px">Flag</th>
+          <th style="width:90px">Country</th>
+          <th class="ctr" style="width:44px">World</th>
+          <th class="ctr" style="width:90px">R1</th>
+          <th class="ctr" style="width:90px">R2</th>
+          <th class="ctr" style="width:90px">R3</th>
+          <th class="ctr" style="width:90px">R4</th>
+          <th class="ctr" style="width:80px">Total</th>
+        </tr>
+      </thead>
+      <tbody id="adminBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<footer id="footerEl">
+  2026 Fantasy Pool · Score Admin
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/data.js?v=6"></script>
+<script src="js/db.js?v=1"></script>
+<script src="js/livescores.js?v=11"></script>
+<script src="js/admin.js?v=11"></script>
+</body>
+</html>

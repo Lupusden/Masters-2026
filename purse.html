@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournament Purse · Pebble Beach Pool 2026</title>
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <style>
+    .purse-wrap { max-width: 780px; margin: 0 auto; padding: 28px 24px; }
+
+    .purse-hero {
+      background: var(--navy);
+      color: #fff; border-radius: var(--radius-lg);
+      padding: 28px 32px; margin-bottom: 28px;
+    }
+    .purse-hero h2 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+    .purse-hero p  { font-size: 0.85rem; color: rgba(255,255,255,.55); }
+    .purse-total   { margin-top: 16px; font-size: 2rem; font-weight: 800; letter-spacing: -0.04em; }
+    .purse-total span { font-size: 1rem; font-weight: 500; opacity: .6; margin-left: 6px; }
+
+    .purse-table-wrap {
+      background: var(--card-bg); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow); overflow: hidden;
+    }
+    .purse-table { width: 100%; border-collapse: collapse; }
+    .purse-table thead th {
+      background: var(--bg); padding: 10px 16px;
+      font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--text-muted);
+      border-bottom: 1px solid var(--border); text-align: left;
+    }
+    .purse-table thead th.ctr { text-align: center; }
+    .purse-table tbody tr {
+      border-bottom: 1px solid var(--border-light);
+      transition: background .12s;
+    }
+    .purse-table tbody tr:last-child { border-bottom: none; }
+    .purse-table tbody tr:hover { background: rgba(0,113,227,.03); }
+    .purse-table td { padding: 10px 16px; font-size: 0.88rem; }
+    .purse-table td.pos-col {
+      font-size: 0.82rem; font-weight: 700; color: var(--text-muted);
+      width: 60px; text-align: center;
+    }
+    .purse-table td.prize-col {
+      font-weight: 700; color: var(--navy); text-align: right; width: 120px;
+      font-variant-numeric: tabular-nums;
+    }
+    .purse-table td.pct-col {
+      text-align: right; width: 80px; color: var(--text-muted);
+      font-size: 0.8rem; font-variant-numeric: tabular-nums;
+    }
+
+    .pos-num { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="pga-logo">
+      <div class="pga-badge"><span>PGA</span>TOUR</div>
+      <div class="t-logo-pill" id="tournamentBadge"></div>
+      <div class="tournament-name">
+        <div class="t-name" id="headerTName">AT&amp;T Pebble Beach Pro-Am</div>
+        <div class="t-sub">FANTASY POOL · 2026 SEASON</div>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="purse.html" class="active">Purse</a>
+      <a href="picks.html">Make Picks</a>
+      <a href="leaderboard.html">Ranking</a>
+      <a href="admin.html" class="nav-admin">Leaderboard</a>
+    </nav>
+  </div>
+</header>
+
+<main class="purse-wrap">
+  <div class="purse-hero">
+    <h2>Tournament Purse</h2>
+    <p id="purseSubtitle">Loading tournament info…</p>
+    <div class="purse-total" id="purseTotal">— <span>Total Purse</span></div>
+  </div>
+
+  <div class="purse-table-wrap">
+    <table class="purse-table">
+      <thead>
+        <tr>
+          <th class="ctr">Position</th>
+          <th>Prize Money</th>
+          <th style="text-align:right">% of Purse</th>
+        </tr>
+      </thead>
+      <tbody id="purseBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer id="footerEl">2026 PGA Tour Fantasy Pool</footer>
+
+<script src="js/data.js?v=6"></script>
+<script src="js/livescores.js?v=11"></script>
+<script>
+(function () {
+  function formatMoney(n) {
+    return '$' + n.toLocaleString('en-US');
+  }
+
+  function loadMeta() {
+    try { return JSON.parse(localStorage.getItem('pebblebeach2026_tournamentmeta') || 'null'); } catch(e) { return null; }
+  }
+
+  // Proportions from base PRIZE_TABLE (keyed to $20M Pebble Beach purse)
+  const BASE_PURSE = TOURNAMENT.purse;
+  const PROPORTIONS = {};
+  Object.keys(PRIZE_TABLE).forEach(pos => {
+    PROPORTIONS[pos] = PRIZE_TABLE[pos] / BASE_PURSE;
+  });
+
+  function getLivePurse() {
+    const meta = loadMeta();
+    return (meta && meta.purse) ? meta.purse : BASE_PURSE;
+  }
+
+  function updateHeader() {
+    const meta = loadMeta();
+    const name  = (meta && meta.name)  ? meta.name  : 'AT&T Pebble Beach Pro-Am';
+    const purse = getLivePurse();
+    const nocut = TOURNAMENT.nocut ? ' · No Cut' : '';
+    const count = Object.keys(PRIZE_TABLE).length;
+
+    document.getElementById('headerTName').textContent = name;
+    document.getElementById('purseSubtitle').textContent =
+      name + ' · ' + TOURNAMENT.season + nocut + ' · ' + count + ' Players';
+    document.getElementById('purseTotal').innerHTML =
+      formatMoney(purse) + ' <span>Total Purse</span>';
+    document.getElementById('footerEl').textContent = TOURNAMENT.season + ' ' + name + ' Fantasy Pool';
+
+    const badge = document.getElementById('tournamentBadge');
+    if (badge && meta && meta.name) {
+      badge.textContent = meta.name.replace(/championship|tournament|pro-am/gi, '').trim();
+      badge.style.display = 'block';
+    }
+  }
+
+  function renderTable() {
+    const livePurse = getLivePurse();
+    const body      = document.getElementById('purseBody');
+    body.innerHTML  = '';
+    const positions = Object.keys(PRIZE_TABLE).map(Number).sort((a, b) => a - b);
+
+    positions.forEach(pos => {
+      // Scale prize by actual purse; round to nearest $500
+      const prize = Math.round((PROPORTIONS[pos] * livePurse) / 500) * 500;
+      const pct   = ((prize / livePurse) * 100).toFixed(2);
+      const tr    = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="pos-col"><span class="pos-num">${pos}</span></td>
+        <td class="prize-col">${formatMoney(prize)}</td>
+        <td class="pct-col">${pct}%</td>
+      `;
+      body.appendChild(tr);
+    });
+  }
+
+  updateHeader();
+  renderTable();
+
+  // Sync ESPN to get current tournament purse
+  if (window.syncLiveScores) {
+    syncLiveScores(() => {}).then(() => { updateHeader(); renderTable(); }).catch(() => {});
+  }
+}());
+</script>
+</body>
+</html>
