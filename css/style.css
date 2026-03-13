@@ -99,11 +99,6 @@ nav a {
 }
 nav a:hover { background: rgba(0,0,0,.04); color: var(--text); }
 nav a.active { background: var(--blue); color: var(--white); }
-nav a.nav-admin {
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-}
-nav a.nav-admin:hover { background: rgba(0,0,0,.04); color: var(--text); }
 
 /* ── Buttons ─────────────────────────────────────────────── */
 .btn {
