@@ -46,11 +46,11 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Header ─────────────────────────────────────────────── */
 header {
-  background: rgba(29, 29, 31, 0.96);
+  background: rgba(255,255,255,0.85);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  color: var(--white);
-  border-bottom: 1px solid rgba(255,255,255,.06);
+  color: var(--text);
+  border-bottom: 1px solid rgba(0,0,0,.08);
   position: sticky; top: 0; z-index: 200;
 }
 .header-inner {
@@ -78,12 +78,12 @@ header {
 .tournament-name .t-name {
   font-size: 1rem;
   font-weight: 600;
-  color: rgba(255,255,255,.92);
+  color: var(--text);
   letter-spacing: -0.01em;
 }
 .tournament-name .t-sub {
   font-size: 0.68rem;
-  color: rgba(255,255,255,.44);
+  color: var(--text-muted);
   font-weight: 500;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -91,19 +91,19 @@ header {
 
 nav { display: flex; gap: 2px; align-items: center; }
 nav a {
-  color: rgba(255,255,255,.76);
+  color: var(--text-muted);
   padding: 7px 14px; border-radius: 8px;
   font-size: 0.83rem; font-weight: 500;
   transition: background .18s, color .18s;
   white-space: nowrap; letter-spacing: -0.01em;
 }
-nav a:hover { background: rgba(255,255,255,.09); color: var(--white); }
+nav a:hover { background: rgba(0,0,0,.04); color: var(--text); }
 nav a.active { background: var(--blue); color: var(--white); }
 nav a.nav-admin {
-  color: rgba(255,255,255,.6);
-  border: 1px solid rgba(255,255,255,.12);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
 }
-nav a.nav-admin:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,.9); }
+nav a.nav-admin:hover { background: rgba(0,0,0,.04); color: var(--text); }
 
 /* ── Buttons ─────────────────────────────────────────────── */
 .btn {
@@ -358,9 +358,9 @@ main { max-width: 1280px; margin: 0 auto; padding: 28px 24px; }
 /* Tournament name badge */
 .t-logo-pill {
   display: none;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.15);
-  color: rgba(255,255,255,.7);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
   padding: 4px 10px;
   border-radius: 7px;
   font-size: 0.58rem;
@@ -414,7 +414,7 @@ thead th {
 thead th.center { text-align: center; }
 tbody tr { border-bottom: 1px solid var(--border-light); transition: background .1s; }
 tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: #fafafe; }
+tbody tr:hover { background: rgba(0,0,0,.02); }
 td { padding: 11px 14px; font-size: 0.86rem; vertical-align: middle; color: var(--text); }
 td.center { text-align: center; }
 
