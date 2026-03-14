@@ -205,9 +205,16 @@ window.syncLiveScores = async function (onProgress) {
     // Holes completed in current round (ESPN competitor.status.thru)
     const liveThru = (comp.status && comp.status.thru != null) ? comp.status.thru : null;
 
-    // Withdrawal / disqualification detection
-    const statusName = comp.status?.type?.name || comp.status?.type?.description || '';
-    const wd = /^(WD|DQ|MDF|Withdrawn|Disqualified)/i.test(statusName);
+    // Withdrawal / disqualification detection — check all ESPN status fields
+    const _st = comp.status || {};
+    const _stt = _st.type || {};
+    const _statusStrings = [
+      _stt.name, _stt.description, _stt.shortDetail,
+      _st.displayValue, _st.shortDetail,
+      comp.score?.displayValue,
+      comp.displayOrder != null && comp.displayOrder > 900 ? 'WD' : null,
+    ].filter(Boolean).join(' ');
+    const wd = /\b(WD|DQ|MDF|Withdrawn|Disqualified|status-wd)\b/i.test(_statusStrings);
 
     // Apply any manual overrides on top of ESPN data
     const ov = overrides[canonical] || {};

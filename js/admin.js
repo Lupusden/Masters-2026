@@ -18,6 +18,10 @@
   function render() {
     const players = getPlayers();
     const sorted  = [...players].sort((a, b) => {
+      // WD players always last
+      if (a.wd && !b.wd) return 1;
+      if (!a.wd && b.wd) return -1;
+      if (a.wd && b.wd) return a.name.localeCompare(b.name);
       const sa = scoreToPar(a), sb = scoreToPar(b);
       if (sa === null && sb === null) return a.name.localeCompare(b.name);
       if (sa === null) return 1;
@@ -43,6 +47,7 @@
 
     const cutInfo = getCutInfo(players);
     let cutInserted = false;
+    let wdInserted = false;
 
     sorted.forEach(player => {
       // Insert cut line before first missed-cut player
@@ -52,6 +57,14 @@
         cutRow.innerHTML = `<td colspan="10">✂ CUT — Players below did not make the cut</td>`;
         tbody.appendChild(cutRow);
         cutInserted = true;
+      }
+      // Insert WD divider before first withdrawn player
+      if (player.wd && !wdInserted) {
+        const wdRow = document.createElement('tr');
+        wdRow.className = 'cut-line-row';
+        wdRow.innerHTML = `<td colspan="10" style="color:#ff3b30;border-color:#ffccc9">WD / Withdrawn</td>`;
+        tbody.appendChild(wdRow);
+        wdInserted = true;
       }
       const edit = pendingEdits[player.name] || {};
       const r1v = edit.r1 !== undefined ? edit.r1 : player.r1;
@@ -91,8 +104,12 @@
       const row = document.createElement('tr');
       row.id = 'row-' + esc(player.name).replace(/[^a-zA-Z0-9]/g, '_');
       if (missedCut) row.classList.add('missed-cut-row');
+      if (player.wd) row.classList.add('wd-row');
+      const posDisplay = player.wd
+        ? '<span style="color:#ff3b30;font-weight:700;font-size:.78rem">WD</span>'
+        : (posMap[player.name] || '—');
       row.innerHTML = `
-        <td class="rank-col ctr">${posMap[player.name] || '—'}</td>
+        <td class="rank-col ctr">${posDisplay}</td>
         <td class="player-col">${esc(player.name)}</td>
         <td class="ctr" style="font-size:1.1rem">${countryParts(player.country).flag}</td>
         <td style="font-size:.8rem;color:var(--text-muted)">${countryParts(player.country).name}</td>

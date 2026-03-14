@@ -321,6 +321,7 @@ main { max-width: 1280px; margin: 0 auto; padding: 28px 24px; }
 /* Cut line row in admin table */
 .cut-line-row td { background: #f0f0f0; color: #6e6e73; font-size: 0.8rem; font-weight: 600; text-align: center; padding: 10px; letter-spacing: .5px; border-top: 2px dashed #c7c7cc; border-bottom: 2px dashed #c7c7cc; }
 .missed-cut-row td { opacity: .55; }
+.wd-row td { opacity: .5; background: #fff5f5; }
 
 .card-pos   { font-size: 0.62rem; font-weight: 500; color: var(--text-muted); letter-spacing: .3px; margin-bottom: 2px; }
 .card-name  { font-size: 0.78rem; font-weight: 600; color: var(--text); line-height: 1.2; margin-bottom: 2px; letter-spacing: -0.01em; }
