@@ -222,7 +222,11 @@ function calculateCurrentPrizes(players) {
     if (meta && meta.purse && TOURNAMENT.purse) purseScale = meta.purse / TOURNAMENT.purse;
   } catch(e) {}
 
-  const scored = players
+  // Separate active players from withdrawn/DQ
+  const active  = players.filter(p => !p.wd);
+  const wdPlayers = players.filter(p => p.wd);
+
+  const scored = active
     .map(p => ({ name: p.name, stp: scoreToPar(p), rounds: roundsPlayed(p) }))
     .filter(p => p.stp !== null)
     .sort((a, b) => a.stp - b.stp);
@@ -239,6 +243,16 @@ function calculateCurrentPrizes(players) {
     for (let k = i; k <= j; k++) prizes[scored[k].name] = avg;
     i = j + 1;
   }
+
+  // WD players share last-place prize among themselves
+  if (wdPlayers.length > 0) {
+    const lastPos = scored.length + 1;
+    let wdSum = 0;
+    for (let k = 0; k < wdPlayers.length; k++) wdSum += (PRIZE_TABLE[lastPos + k] || 0);
+    const wdAvg = Math.round((wdSum / wdPlayers.length) * purseScale);
+    wdPlayers.forEach(p => { prizes[p.name] = wdAvg; });
+  }
+
   return prizes;
 }
 

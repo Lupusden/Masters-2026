@@ -157,7 +157,7 @@
     players.forEach(p => { playerMap[p.name] = p; });
 
     const playersWithScore = [...players]
-      .filter(p => scoreToPar(p) !== null)
+      .filter(p => !p.wd && scoreToPar(p) !== null)
       .sort((a, b) => scoreToPar(a) - scoreToPar(b));
     const posMap = {};
     let posIdx = 0;
@@ -186,9 +186,10 @@
         const isTb = name === entry.tiebreaker;
         const p = playerMap[name];
         const stp = p ? scoreToPar(p) : null;
-        const stpStr = stp === null ? '—' : formatScoreToPar(stp);
-        const stpCls = stp === null ? 'even' : stp < 0 ? 'under' : stp > 0 ? 'over' : 'even';
-        const pos = posMap[name] || '—';
+        const isWD = p && p.wd;
+        const stpStr = isWD ? 'WD' : (stp === null ? '—' : formatScoreToPar(stp));
+        const stpCls = isWD ? 'over' : (stp === null ? 'even' : stp < 0 ? 'under' : stp > 0 ? 'over' : 'even');
+        const pos = isWD ? 'WD' : (posMap[name] || '—');
         const prize = prizeMap[name] ? formatPrize(prizeMap[name]) : '—';
         const cp = p ? countryParts(p.country) : { flag: '', name: '' };
         return `<td>

@@ -205,6 +205,10 @@ window.syncLiveScores = async function (onProgress) {
     // Holes completed in current round (ESPN competitor.status.thru)
     const liveThru = (comp.status && comp.status.thru != null) ? comp.status.thru : null;
 
+    // Withdrawal / disqualification detection
+    const statusName = comp.status?.type?.name || comp.status?.type?.description || '';
+    const wd = /^(WD|DQ|MDF|Withdrawn|Disqualified)/i.test(statusName);
+
     // Apply any manual overrides on top of ESPN data
     const ov = overrides[canonical] || {};
     const r1 = ov.r1 !== undefined ? ov.r1 : rounds.r1;
@@ -228,6 +232,7 @@ window.syncLiveScores = async function (onProgress) {
       r1topar, r2topar, r3topar, r4topar,   // to-par per round (completed or live)
       liveTopar,  // ESPN total running to-par (includes in-progress holes)
       liveThru,   // holes completed in current round (null if not in-progress)
+      wd,         // true if player withdrew / DQ
     });
 
     // Also persist ESPN scores into overrides so manual-save still works
