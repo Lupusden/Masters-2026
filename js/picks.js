@@ -44,8 +44,9 @@
   function buildGrid(list) {
     grid.innerHTML = '';
     const sorted = sortPlayers(list, sortSelect.value);
+    const cutInfo = getCutInfo(list);
     sorted.forEach(player => {
-      const card = buildCard(player);
+      const card = buildCard(player, cutInfo);
       grid.appendChild(card);
     });
   }
@@ -73,9 +74,11 @@
     return map;
   }
 
-  function buildCard(player) {
+  function buildCard(player, cutInfo) {
+    cutInfo = cutInfo || { applies: false, madeCut: new Set() };
+    const missedCut = cutInfo.applies && !player.wd && !cutInfo.madeCut.has(player.name);
     const card = document.createElement('div');
-    card.className = 'player-card';
+    card.className = 'player-card' + (missedCut ? ' missed-cut' : '');
     card.dataset.name = player.name;
 
     const stp  = scoreToPar(player);
@@ -90,7 +93,8 @@
 
     card.innerHTML = `
       <div class="card-world">#${player.world}</div>
-      <button class="card-select-btn" title="Add/remove player" aria-label="Select ${player.name}">+</button>
+      ${missedCut ? '<div class="card-cut-badge">MC</div>' : ''}
+      <button class="card-select-btn" title="${missedCut ? 'Missed cut' : 'Add/remove player'}" aria-label="Select ${player.name}" ${missedCut ? 'disabled' : ''}>+</button>
       <div style="margin-top:12px">
         <div class="card-pos">${rnd > 0 ? 'Thru R' + rnd : 'Not Yet Played'}</div>
         <div class="card-name">${escHtml(player.name)}</div>
@@ -114,7 +118,7 @@
       if (selected.includes(player.name)) toggleTiebreaker(player.name);
     });
 
-    card.addEventListener('click', () => handleCardClick(player.name));
+    if (!missedCut) card.addEventListener('click', () => handleCardClick(player.name));
 
     return card;
   }
@@ -250,8 +254,9 @@
     const sorted = sortPlayers(players, sortSelect.value);
     const filtered = q ? sorted.filter(p => p.name.toLowerCase().includes(q)) : sorted;
 
+    const cutInfo = getCutInfo(players);
     grid.innerHTML = '';
-    filtered.forEach(p => grid.appendChild(buildCard(p)));
+    filtered.forEach(p => grid.appendChild(buildCard(p, cutInfo)));
     renderCards();
   }
 

@@ -256,6 +256,21 @@ function calculateCurrentPrizes(players) {
   return prizes;
 }
 
+// ── Cut line calculation (top 65 + ties after Round 2) ──────
+function getCutInfo(players) {
+  const r2Players = players.filter(p => p.r1 !== null && p.r2 !== null && !p.wd);
+  if (r2Players.length === 0) return { applies: false, madeCut: new Set() };
+
+  const sorted = [...r2Players].sort((a, b) => (a.r1 + a.r2) - (b.r1 + b.r2));
+  const cutIdx  = Math.min(64, sorted.length - 1); // 65th position (0-indexed: 64)
+  const cutTotal = sorted[cutIdx].r1 + sorted[cutIdx].r2;
+
+  const madeCut = new Set(
+    sorted.filter(p => (p.r1 + p.r2) <= cutTotal).map(p => p.name)
+  );
+  return { applies: true, cutScore: cutTotal, madeCut };
+}
+
 // ── Pool entries helpers ─────────────────────────────────────
 function loadEntries() {
   try { return JSON.parse(localStorage.getItem(ENTRIES_KEY) || '[]'); } catch(e) { return []; }

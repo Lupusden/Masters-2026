@@ -41,7 +41,18 @@
     const tbody = document.getElementById('adminBody');
     tbody.innerHTML = '';
 
+    const cutInfo = getCutInfo(players);
+    let cutInserted = false;
+
     sorted.forEach(player => {
+      // Insert cut line before first missed-cut player
+      if (cutInfo.applies && !cutInserted && !player.wd && !cutInfo.madeCut.has(player.name)) {
+        const cutRow = document.createElement('tr');
+        cutRow.className = 'cut-line-row';
+        cutRow.innerHTML = `<td colspan="10">✂ CUT — Players below did not make the cut</td>`;
+        tbody.appendChild(cutRow);
+        cutInserted = true;
+      }
       const edit = pendingEdits[player.name] || {};
       const r1v = edit.r1 !== undefined ? edit.r1 : player.r1;
       const r2v = edit.r2 !== undefined ? edit.r2 : player.r2;
@@ -76,8 +87,10 @@
         return `<div class="round-cell-wrap"><span style="font-size:.92rem;font-weight:700;color:var(--navy)">${scoreText}</span>${toparBadge(topar)}</div>`;
       };
 
+      const missedCut = cutInfo.applies && !player.wd && !cutInfo.madeCut.has(player.name);
       const row = document.createElement('tr');
       row.id = 'row-' + esc(player.name).replace(/[^a-zA-Z0-9]/g, '_');
+      if (missedCut) row.classList.add('missed-cut-row');
       row.innerHTML = `
         <td class="rank-col ctr">${posMap[player.name] || '—'}</td>
         <td class="player-col">${esc(player.name)}</td>
