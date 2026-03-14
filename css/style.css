@@ -230,12 +230,12 @@ main { max-width: 1280px; margin: 0 auto; padding: 28px 24px; }
 .name-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .name-row label { font-weight: 500; font-size: 0.83rem; color: var(--text-muted); white-space: nowrap; }
 .name-row input {
-  padding: 8px 13px; border: 1.5px solid var(--border); border-radius: 9px;
+  padding: 8px 13px; border: 1.5px solid var(--blue); border-radius: 9px;
   font-size: 0.88rem; font-family: inherit; outline: none;
   transition: border-color .18s; min-width: 180px; color: var(--text);
-  background: var(--bg);
+  background: var(--white); box-shadow: 0 0 0 3px rgba(0,113,227,0.18);
 }
-.name-row input:focus { border-color: var(--blue); background: var(--white); box-shadow: 0 0 0 3px rgba(0,113,227,0.18); outline: none; }
+.name-row input:focus { box-shadow: 0 0 0 3px rgba(0,113,227,0.28); }
 
 /* Status bar */
 .picks-status {
