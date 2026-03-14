@@ -11,6 +11,47 @@ const LAST_SYNC_KEY          = 'pebblebeach2026_lastsync';
 const DYNAMIC_PLAYERS_KEY    = 'pebblebeach2026_dynamicplayers';
 const TOURNAMENT_META_KEY    = 'pebblebeach2026_tournamentmeta';
 
+// ── Country name → flag emoji map ───────────────────────────
+const COUNTRY_FLAGS = {
+  'United States': '🇺🇸', 'USA': '🇺🇸',
+  'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'ENG': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+  'Scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'SCO': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  'Northern Ireland': '🇬🇧', 'NIR': '🇬🇧',
+  'Wales': '🏴󠁧󠁢󠁷󠁬󠁳󠁿', 'WAL': '🏴󠁧󠁢󠁷󠁬󠁳󠁿',
+  'United Kingdom': '🇬🇧', 'GBR': '🇬🇧',
+  'Ireland': '🇮🇪', 'IRL': '🇮🇪',
+  'Australia': '🇦🇺', 'AUS': '🇦🇺',
+  'Canada': '🇨🇦', 'CAN': '🇨🇦',
+  'Japan': '🇯🇵', 'JPN': '🇯🇵',
+  'South Korea': '🇰🇷', 'KOR': '🇰🇷',
+  'South Africa': '🇿🇦', 'RSA': '🇿🇦',
+  'Spain': '🇪🇸', 'ESP': '🇪🇸',
+  'Sweden': '🇸🇪', 'SWE': '🇸🇪',
+  'Norway': '🇳🇴', 'NOR': '🇳🇴',
+  'Denmark': '🇩🇰', 'DEN': '🇩🇰',
+  'Germany': '🇩🇪', 'GER': '🇩🇪',
+  'France': '🇫🇷', 'FRA': '🇫🇷',
+  'Belgium': '🇧🇪', 'BEL': '🇧🇪',
+  'Netherlands': '🇳🇱', 'NED': '🇳🇱',
+  'Italy': '🇮🇹', 'ITA': '🇮🇹',
+  'New Zealand': '🇳🇿', 'NZL': '🇳🇿',
+  'Argentina': '🇦🇷', 'ARG': '🇦🇷',
+  'Colombia': '🇨🇴', 'COL': '🇨🇴',
+  'Venezuela': '🇻🇪', 'VEN': '🇻🇪',
+  'Austria': '🇦🇹', 'AUT': '🇦🇹',
+  'Finland': '🇫🇮', 'FIN': '🇫🇮',
+  'China': '🇨🇳', 'CHN': '🇨🇳',
+  'Taiwan': '🇹🇼', 'TPE': '🇹🇼',
+  'Thailand': '🇹🇭', 'THA': '🇹🇭',
+  'Mexico': '🇲🇽', 'MEX': '🇲🇽',
+  'Chile': '🇨🇱', 'CHI': '🇨🇱',
+  'Paraguay': '🇵🇾', 'PAR': '🇵🇾',
+  'Czech Republic': '🇨🇿', 'CZE': '🇨🇿',
+  'Zimbabwe': '🇿🇼', 'ZIM': '🇿🇼',
+  'Fiji': '🇫🇯', 'FIJ': '🇫🇯',
+};
+function countryToFlag(name) { return COUNTRY_FLAGS[name] || null; }
+
 // ── Normalise a player name for fuzzy matching ──────────────
 function normName(s) {
   return s
@@ -176,9 +217,11 @@ window.syncLiveScores = async function (onProgress) {
     const r1topar = rounds.r1topar, r2topar = rounds.r2topar;
     const r3topar = rounds.r3topar, r4topar = rounds.r4topar;
 
+    const espnCountry = comp.athlete?.flag?.alt ? countryToFlag(comp.athlete.flag.alt) : null;
+    const country = (existing && existing.country) ? existing.country : (espnCountry || '🌍');
     dynamicPlayers.push({
       name:    canonical,
-      country: existing ? existing.country : '🌍',
+      country,
       world:   existing ? existing.world   : 999,
       r1, r2, r3, r4,
       r1live, r2live, r3live, r4live,       // true = round currently in progress
