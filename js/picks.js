@@ -76,15 +76,17 @@
 
   function buildCard(player, cutInfo) {
     cutInfo = cutInfo || { applies: false, madeCut: new Set() };
-    const missedCut = cutInfo.applies && !player.wd && !cutInfo.madeCut.has(player.name);
+    const isWD      = !!player.wd;
+    const missedCut = !isWD && cutInfo.applies && !cutInfo.madeCut.has(player.name);
+    const disabled  = isWD || missedCut;
     const card = document.createElement('div');
-    card.className = 'player-card' + (missedCut ? ' missed-cut' : '');
+    card.className = 'player-card' + (isWD ? ' missed-cut' : missedCut ? ' missed-cut' : '');
     card.dataset.name = player.name;
 
     const stp  = scoreToPar(player);
     const rnd  = roundsPlayed(player);
     const scClass = stp === null ? 'even' : stp < 0 ? 'under' : stp > 0 ? 'over' : 'even';
-    const scText  = stp === null ? '—' : formatScoreToPar(stp);
+    const scText  = isWD ? 'WD' : (stp === null ? '—' : formatScoreToPar(stp));
     const prize   = prizes[player.name];
     const r1Disp  = player.r1 !== null ? player.r1 : '—';
     const r2Disp  = player.r2 !== null ? player.r2 : '—';
@@ -93,8 +95,8 @@
 
     card.innerHTML = `
       <div class="card-world">#${player.world}</div>
-      ${missedCut ? '<div class="card-cut-badge">MC</div>' : ''}
-      <button class="card-select-btn" title="${missedCut ? 'Missed cut' : 'Add/remove player'}" aria-label="Select ${player.name}" ${missedCut ? 'disabled' : ''}>+</button>
+      ${isWD ? '<div class="card-cut-badge" style="background:#ff3b30">WD</div>' : missedCut ? '<div class="card-cut-badge">MC</div>' : ''}
+      <button class="card-select-btn" title="${isWD ? 'Withdrawn' : missedCut ? 'Missed cut' : 'Add/remove player'}" aria-label="Select ${player.name}" ${disabled ? 'disabled' : ''}>+</button>
       <div style="margin-top:12px">
         <div class="card-pos">${rnd > 0 ? 'Thru R' + rnd : 'Not Yet Played'}</div>
         <div class="card-name">${escHtml(player.name)}</div>
@@ -118,7 +120,7 @@
       if (selected.includes(player.name)) toggleTiebreaker(player.name);
     });
 
-    if (!missedCut) card.addEventListener('click', () => handleCardClick(player.name));
+    if (!disabled) card.addEventListener('click', () => handleCardClick(player.name));
 
     return card;
   }
