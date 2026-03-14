@@ -228,7 +228,7 @@ main { max-width: 1280px; margin: 0 auto; padding: 28px 24px; }
 .picks-top-left p  { font-size: 0.83rem; color: var(--text-muted); margin-top: 4px; }
 
 .name-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.name-row label { font-weight: 500; font-size: 0.83rem; color: var(--text-muted); white-space: nowrap; }
+.name-row label { font-weight: 500; font-size: 0.83rem; color: var(--white); white-space: nowrap; background: var(--blue); padding: 6px 13px; border-radius: 9px; }
 .name-row input {
   padding: 8px 13px; border: 1.5px solid var(--blue); border-radius: 9px;
   font-size: 0.88rem; font-family: inherit; outline: none;
