@@ -225,6 +225,9 @@
 
   // ── Delete entry ──────────────────────────────────────────
   window.confirmDelete = function (name) {
+    const pw = window.prompt('Enter admin password to delete this pick:');
+    if (pw === null) return;
+    if (pw !== '1812') { alert('Incorrect password.'); return; }
     if (!confirm(`Remove ${name}'s picks? This cannot be undone.`)) return;
     deleteEntry(name);
     render();
