@@ -43,8 +43,12 @@
   // ── Build grid ──────────────────────────────────────────
   function buildGrid(list) {
     grid.innerHTML = '';
-    const sorted = sortPlayers(list, sortSelect.value);
     const cutInfo = getCutInfo(list);
+    // After cut applies, hide missed-cut and WD players entirely
+    const visible = cutInfo.applies
+      ? list.filter(p => !p.wd && cutInfo.madeCut.has(p.name))
+      : list;
+    const sorted = sortPlayers(visible, sortSelect.value);
     sorted.forEach(player => {
       const card = buildCard(player, cutInfo);
       grid.appendChild(card);
