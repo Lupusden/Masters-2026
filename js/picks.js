@@ -44,14 +44,20 @@
   function buildGrid(list) {
     grid.innerHTML = '';
     const cutInfo = getCutInfo(list);
-    // After cut applies, hide missed-cut and WD players entirely
-    const visible = cutInfo.applies
-      ? list.filter(p => !p.wd && cutInfo.madeCut.has(p.name))
-      : list;
+    const visible = getVisible(list, cutInfo);
     const sorted = sortPlayers(visible, sortSelect.value);
     sorted.forEach(player => {
       const card = buildCard(player, cutInfo);
       grid.appendChild(card);
+    });
+  }
+
+  // Returns only players eligible to be picked (no WD, no missed cut)
+  function getVisible(list, cutInfo) {
+    return list.filter(p => {
+      if (p.wd) return false;
+      if (cutInfo.applies && !cutInfo.madeCut.has(p.name)) return false;
+      return true;
     });
   }
 
@@ -257,10 +263,11 @@
   // ── Filter/search ─────────────────────────────────────────
   function filterGrid() {
     const q = searchInput.value.trim().toLowerCase();
-    const sorted = sortPlayers(players, sortSelect.value);
+    const cutInfo = getCutInfo(players);
+    const visible = getVisible(players, cutInfo);
+    const sorted = sortPlayers(visible, sortSelect.value);
     const filtered = q ? sorted.filter(p => p.name.toLowerCase().includes(q)) : sorted;
 
-    const cutInfo = getCutInfo(players);
     grid.innerHTML = '';
     filtered.forEach(p => grid.appendChild(buildCard(p, cutInfo)));
     renderCards();
