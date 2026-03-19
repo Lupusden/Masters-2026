@@ -58,9 +58,9 @@
     });
   }
 
-  // Returns players to show in the grid (WD players hidden; missed-cut shown but disabled)
+  // All players shown — WD/MC badges and disabled buttons handled in buildCard
   function getVisible(list) {
-    return list.filter(p => !p.wd);
+    return list;
   }
 
   function sortPlayers(list, method) {
