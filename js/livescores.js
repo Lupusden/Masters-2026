@@ -258,8 +258,9 @@ window.syncLiveScores = async function (onProgress) {
       wd,         // true if player withdrew / DQ
     });
 
-    // Also persist ESPN scores into overrides so manual-save still works
-    if (!overrides[canonical]) overrides[canonical] = {};
+    // Persist ESPN scores into overrides — reset player entry first so stale
+    // scores from a previous sync don't bleed through for in-progress rounds
+    overrides[canonical] = {};
     ['r1','r2','r3','r4'].forEach(r => {
       if (rounds[r] !== null) overrides[canonical][r] = rounds[r];
     });

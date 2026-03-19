@@ -258,6 +258,10 @@ function calculateCurrentPrizes(players) {
 
 // ── Cut line calculation (top 65 + ties after Round 2) ──────
 function getCutInfo(players) {
+  // Only apply cut after R3 has started — confirms cut has actually been made
+  const r3Started = players.some(p => p.r3 !== null);
+  if (!r3Started) return { applies: false, madeCut: new Set() };
+
   const r2Players = players.filter(p => p.r1 !== null && p.r2 !== null && !p.wd);
   if (r2Players.length === 0) return { applies: false, madeCut: new Set() };
 
