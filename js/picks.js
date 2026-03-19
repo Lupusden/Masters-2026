@@ -97,6 +97,7 @@
 
     const stp  = scoreToPar(player);
     const rnd  = roundsPlayed(player);
+    const isLive = !isWD && rnd === 0 && stp !== null;
     const scClass = stp === null ? 'even' : stp < 0 ? 'under' : stp > 0 ? 'over' : 'even';
     const scText  = isWD ? 'WD' : (stp === null ? '—' : formatScoreToPar(stp));
     const prize   = prizes[player.name];
@@ -104,13 +105,14 @@
     const r2Disp  = player.r2 !== null ? player.r2 : '—';
     const r3Disp  = player.r3 !== null ? player.r3 : '—';
     const r4Disp  = player.r4 !== null ? player.r4 : '—';
+    const posLabel = isWD ? 'WD' : isLive ? 'In Progress' : rnd > 0 ? 'Thru R' + rnd : 'Not Yet Played';
 
     card.innerHTML = `
       <div class="card-world">#${player.world}</div>
       ${isWD ? '<div class="card-cut-badge" style="background:#ff3b30">WD</div>' : missedCut ? '<div class="card-cut-badge">MC</div>' : ''}
       <button class="card-select-btn" title="${isWD ? 'Withdrawn' : missedCut ? 'Missed cut' : 'Add/remove player'}" aria-label="Select ${player.name}" ${disabled ? 'disabled' : ''}>+</button>
       <div style="margin-top:12px">
-        <div class="card-pos">${rnd > 0 ? 'Thru R' + rnd : 'Not Yet Played'}</div>
+        <div class="card-pos">${posLabel}</div>
         <div class="card-name">${escHtml(player.name)}</div>
         <div class="card-country">${player.country}</div>
         <div class="card-score ${scClass}">${scText}</div>
