@@ -7,9 +7,10 @@
 const ESPN_URL = 'https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga';
 const PROXY_URL = url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
 
-const LAST_SYNC_KEY          = 'pebblebeach2026_lastsync';
-const DYNAMIC_PLAYERS_KEY    = 'pebblebeach2026_dynamicplayers';
-const TOURNAMENT_META_KEY    = 'pebblebeach2026_tournamentmeta';
+const LAST_SYNC_KEY          = 'golfpool_lastsync';
+const DYNAMIC_PLAYERS_KEY    = 'golfpool_dynamicplayers';
+const TOURNAMENT_META_KEY    = 'golfpool_tournamentmeta';
+const CURRENT_TOURNAMENT_KEY = 'golfpool_currenttournament';
 
 // ── Country name → flag emoji map ───────────────────────────
 const COUNTRY_FLAGS = {
@@ -178,6 +179,21 @@ window.syncLiveScores = async function (onProgress) {
   }
 
   const { tournament, status, competitors, venue, logoUrl, purse, displayPurse } = parsed;
+
+  // Detect tournament change — if ESPN returns a new event, reset all pool data
+  let tournamentChanged = false;
+  try {
+    const stored = localStorage.getItem(CURRENT_TOURNAMENT_KEY);
+    if (stored && stored !== tournament) {
+      // New tournament detected: wipe picks, scores, and old player roster
+      localStorage.removeItem('golfpool_entries');
+      localStorage.removeItem('golfpool_scores');
+      localStorage.removeItem('golfpool_dynamicplayers');
+      tournamentChanged = true;
+    }
+    localStorage.setItem(CURRENT_TOURNAMENT_KEY, tournament);
+  } catch(e) {}
+
   onProgress && onProgress(`Syncing ${competitors.length} players from "${tournament}" (${status})…`);
 
   // Build a lookup map from DEFAULT_PLAYERS for country/world ranking
@@ -278,6 +294,7 @@ window.syncLiveScores = async function (onProgress) {
     status,
     matched: dynamicPlayers.length,
     unmatched: [],
+    tournamentChanged,
   };
 };
 

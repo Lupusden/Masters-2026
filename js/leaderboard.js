@@ -254,8 +254,13 @@
       render();
       const unmatchedNote = result.unmatched.length
         ? ` · ${result.unmatched.length} unmatched names` : '';
-      status.textContent = `✅ Synced ${result.matched} round scores — ${result.tournament} (${result.status})${unmatchedNote}`;
-      showToast('Live scores updated!', 'success');
+      if (result.tournamentChanged) {
+        status.textContent = `🔄 New tournament: ${result.tournament} — picks reset for new week`;
+        showToast(`New tournament detected: ${result.tournament}`, 'success');
+      } else {
+        status.textContent = `✅ Synced ${result.matched} round scores — ${result.tournament} (${result.status})${unmatchedNote}`;
+        showToast('Live scores updated!', 'success');
+      }
     } catch (e) {
       status.textContent = '❌ Sync failed: ' + e.message;
       showToast('Sync failed — check console for details.', 'error');

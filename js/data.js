@@ -124,8 +124,8 @@ const DEFAULT_PLAYERS = [
 ];
 
 // ── Score storage helpers ────────────────────────────────────
-const SCORES_KEY  = 'pebblebeach2026_scores';
-const ENTRIES_KEY = 'pebblebeach2026_entries';
+const SCORES_KEY  = 'golfpool_scores';
+const ENTRIES_KEY = 'golfpool_entries';
 
 function loadScores() {
   try { return JSON.parse(localStorage.getItem(SCORES_KEY) || '{}'); } catch(e) { return {}; }
@@ -144,7 +144,7 @@ function getPlayers() {
 
   // Check for a live ESPN-synced roster
   try {
-    const dynamic = JSON.parse(localStorage.getItem('pebblebeach2026_dynamicplayers') || 'null');
+    const dynamic = JSON.parse(localStorage.getItem('golfpool_dynamicplayers') || 'null');
     if (dynamic && dynamic.length > 0) {
       return dynamic.map(p => {
         const ov = overrides[p.name] || {};
@@ -218,7 +218,7 @@ function calculateCurrentPrizes(players) {
   // Scale prize amounts to match the live tournament purse
   let purseScale = 1;
   try {
-    const meta = JSON.parse(localStorage.getItem('pebblebeach2026_tournamentmeta') || 'null');
+    const meta = JSON.parse(localStorage.getItem('golfpool_tournamentmeta') || 'null');
     if (meta && meta.purse && TOURNAMENT.purse) purseScale = meta.purse / TOURNAMENT.purse;
   } catch(e) {}
 

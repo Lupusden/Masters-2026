@@ -112,7 +112,7 @@
 <script>
 (function(){
   try {
-    const meta = JSON.parse(localStorage.getItem('pebblebeach2026_tournamentmeta') || 'null');
+    const meta = JSON.parse(localStorage.getItem('golfpool_tournamentmeta') || 'null');
     if (meta && meta.name) { const el = document.querySelector('.t-name'); if (el) el.textContent = meta.name; }
     if (meta && meta.name) { const b = document.getElementById('tournamentBadge'); if (b) { b.textContent = meta.name.replace(/championship|tournament|pro-am/gi,'').trim(); b.style.display = 'block'; } }
     if (meta && meta.name) { const f = document.getElementById('footerEl'); if (f) f.textContent = '2026 ' + meta.name + ' Fantasy Pool · Score Admin'; }
