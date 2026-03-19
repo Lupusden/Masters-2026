@@ -80,12 +80,12 @@
 
   function getTournamentRanks(ps) {
     const sorted = [...ps]
-      .filter(p => totalScore(p) !== null)
-      .sort((a, b) => totalScore(a) - totalScore(b));
+      .filter(p => scoreToPar(p) !== null)
+      .sort((a, b) => scoreToPar(a) - scoreToPar(b));
     const map = {};
     sorted.forEach((p, i) => { map[p.name] = i + 1; });
     // players with no score go to end
-    ps.filter(p => totalScore(p) === null).forEach((p, i) => { map[p.name] = sorted.length + i + 1; });
+    ps.filter(p => scoreToPar(p) === null).forEach((p, i) => { map[p.name] = sorted.length + i + 1; });
     return map;
   }
 
