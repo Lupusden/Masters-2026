@@ -27,6 +27,9 @@
     searchInput.addEventListener('input', filterGrid);
     sortSelect.addEventListener('change', filterGrid);
 
+    // Clear stale cached player data so sync always produces a clean render
+    localStorage.removeItem('golfpool_dynamicplayers');
+
     // Sync live scores first, then render — so grid matches admin leaderboard
     if (window.syncLiveScores) {
       syncLiveScores(() => {}).then(() => {
