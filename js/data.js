@@ -256,17 +256,31 @@ function calculateCurrentPrizes(players) {
   return prizes;
 }
 
-// ── Cut line calculation (top 65 + ties after Round 2) ──────
+// ── Cut line calculation — uses ESPN tournament cut rules ────
 function getCutInfo(players) {
-  // Only apply cut after R3 has started — confirms cut has actually been made
-  const r3Started = players.some(p => p.r3 !== null);
-  if (!r3Started) return { applies: false, madeCut: new Set() };
+  // Read cut rules from last ESPN sync
+  let cutCount = 65;  // default: top 65 + ties
+  let noCut    = false;
+  try {
+    const meta = JSON.parse(localStorage.getItem('golfpool_tournamentmeta') || 'null');
+    if (meta) {
+      if (meta.noCut) noCut = true;
+      if (meta.cutCount && meta.cutCount > 0) cutCount = meta.cutCount;
+    }
+  } catch(e) {}
 
+  if (noCut) return { applies: false, madeCut: new Set() };
+
+  // Apply cut when all active players have completed R2
+  // (R2 is done when every player with an R1 score also has an R2 score)
+  const r1Players = players.filter(p => p.r1 !== null && !p.wd);
   const r2Players = players.filter(p => p.r1 !== null && p.r2 !== null && !p.wd);
-  if (r2Players.length === 0) return { applies: false, madeCut: new Set() };
+  if (r1Players.length === 0 || r2Players.length < r1Players.length) {
+    return { applies: false, madeCut: new Set() };
+  }
 
-  const sorted = [...r2Players].sort((a, b) => (a.r1 + a.r2) - (b.r1 + b.r2));
-  const cutIdx  = Math.min(64, sorted.length - 1); // 65th position (0-indexed: 64)
+  const sorted   = [...r2Players].sort((a, b) => (a.r1 + a.r2) - (b.r1 + b.r2));
+  const cutIdx   = Math.min(cutCount - 1, sorted.length - 1);
   const cutTotal = sorted[cutIdx].r1 + sorted[cutIdx].r2;
 
   const madeCut = new Set(

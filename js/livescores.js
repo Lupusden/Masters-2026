@@ -115,6 +115,13 @@ function parseCompetitors(data) {
   const logos = event.logos || [];
   const logoUrl = logos.find(l => !l.rel?.includes('dark'))?.href || logos[0]?.href || null;
 
+  // Cut rules from ESPN tournament object
+  const t = event.tournament || {};
+  const cutRound = t.cutRound != null ? t.cutRound : 2;  // round after which cut applies
+  const cutCount = t.cutCount || 65;                      // number of players making the cut
+  // No-cut if ESPN says cutRound is 0, or cutCount covers essentially the whole field
+  const noCut = cutRound === 0;
+
   return {
     tournament: event.name || 'PGA Tour',
     status:     event.status?.type?.description || 'In Progress',
@@ -123,6 +130,9 @@ function parseCompetitors(data) {
     logoUrl,
     purse:        event.purse        || null,
     displayPurse: event.displayPurse || null,
+    cutRound,
+    cutCount,
+    noCut,
   };
 }
 
@@ -178,7 +188,7 @@ window.syncLiveScores = async function (onProgress) {
     throw new Error('ESPN data format unexpected: ' + e.message);
   }
 
-  const { tournament, status, competitors, venue, logoUrl, purse, displayPurse } = parsed;
+  const { tournament, status, competitors, venue, logoUrl, purse, displayPurse, cutRound, cutCount, noCut } = parsed;
 
   // Detect tournament change — if ESPN returns a new event, reset all pool data
   let tournamentChanged = false;
@@ -277,6 +287,9 @@ window.syncLiveScores = async function (onProgress) {
     logoUrl,
     purse,
     displayPurse,
+    cutRound,
+    cutCount,
+    noCut,
     lastSync: Date.now(),
   }));
 
