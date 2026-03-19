@@ -228,7 +228,6 @@ window.syncLiveScores = async function (onProgress) {
       _stt.name, _stt.description, _stt.shortDetail,
       _st.displayValue, _st.shortDetail,
       comp.score?.displayValue,
-      comp.displayOrder != null && comp.displayOrder > 900 ? 'WD' : null,
     ].filter(Boolean).join(' ');
     const wd = /\b(WD|DQ|MDF|Withdrawn|Disqualified|status-wd)\b/i.test(_statusStrings);
 

@@ -23,20 +23,26 @@
 
   // ── Init ────────────────────────────────────────────────
   function init() {
-    players = getPlayers();
-    prizes  = calculateCurrentPrizes(players);
-    buildGrid(players);
     nameInput.addEventListener('input', refreshSubmitState);
     searchInput.addEventListener('input', filterGrid);
     sortSelect.addEventListener('change', filterGrid);
 
-    // Auto-sync live scores on page load
+    // Sync live scores first, then render — so grid matches admin leaderboard
     if (window.syncLiveScores) {
       syncLiveScores(() => {}).then(() => {
         players = getPlayers();
         prizes  = calculateCurrentPrizes(players);
-        filterGrid();
-      }).catch(() => {});
+        buildGrid(players);
+      }).catch(() => {
+        // Sync failed — fall back to cached data
+        players = getPlayers();
+        prizes  = calculateCurrentPrizes(players);
+        buildGrid(players);
+      });
+    } else {
+      players = getPlayers();
+      prizes  = calculateCurrentPrizes(players);
+      buildGrid(players);
     }
   }
 
@@ -44,7 +50,7 @@
   function buildGrid(list) {
     grid.innerHTML = '';
     const cutInfo = getCutInfo(list);
-    const visible = getVisible(list, cutInfo);
+    const visible = getVisible(list);
     const sorted = sortPlayers(visible, sortSelect.value);
     sorted.forEach(player => {
       const card = buildCard(player, cutInfo);
@@ -52,13 +58,9 @@
     });
   }
 
-  // Returns only players eligible to be picked (no WD, no missed cut)
-  function getVisible(list, cutInfo) {
-    return list.filter(p => {
-      if (p.wd) return false;
-      if (cutInfo.applies && !cutInfo.madeCut.has(p.name)) return false;
-      return true;
-    });
+  // Returns players to show in the grid (WD players hidden; missed-cut shown but disabled)
+  function getVisible(list) {
+    return list.filter(p => !p.wd);
   }
 
   function sortPlayers(list, method) {
@@ -264,7 +266,7 @@
   function filterGrid() {
     const q = searchInput.value.trim().toLowerCase();
     const cutInfo = getCutInfo(players);
-    const visible = getVisible(players, cutInfo);
+    const visible = getVisible(players);
     const sorted = sortPlayers(visible, sortSelect.value);
     const filtered = q ? sorted.filter(p => p.name.toLowerCase().includes(q)) : sorted;
 
