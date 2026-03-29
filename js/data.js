@@ -271,6 +271,10 @@ function getCutInfo(players) {
 
   if (noCut) return { applies: false, madeCut: new Set() };
 
+  // Don't apply cut while any player is still mid-R2
+  const hasLiveR2 = players.some(p => p.r2live && !p.wd);
+  if (hasLiveR2) return { applies: false, madeCut: new Set() };
+
   // Apply cut when all active players have completed R2
   // (R2 is done when every player with an R1 score also has an R2 score)
   const r1Players = players.filter(p => p.r1 !== null && !p.wd);
@@ -283,8 +287,13 @@ function getCutInfo(players) {
   const cutIdx   = Math.min(cutCount - 1, sorted.length - 1);
   const cutTotal = sorted[cutIdx].r1 + sorted[cutIdx].r2;
 
+  // Any player with weekend (R3/R4) data empirically made the cut regardless
+  // of cutCount math — include them to handle ties at the cut line correctly
   const madeCut = new Set(
-    sorted.filter(p => (p.r1 + p.r2) <= cutTotal).map(p => p.name)
+    sorted.filter(p =>
+      (p.r1 + p.r2) <= cutTotal ||
+      p.r3 !== null || p.r4 !== null || p.r3live || p.r4live
+    ).map(p => p.name)
   );
   return { applies: true, cutScore: cutTotal, madeCut };
 }

@@ -74,12 +74,15 @@ header {
   white-space: nowrap;
 }
 .pga-badge span { display: block; font-size: 0.8rem; letter-spacing: 2.5px; }
-.tournament-name { line-height: 1.15; }
+.tournament-name { line-height: 1.15; max-width: 220px; overflow: hidden; }
 .tournament-name .t-name {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .tournament-name .t-sub {
   font-size: 0.68rem;
@@ -361,7 +364,7 @@ main { max-width: 1280px; margin: 0 auto; padding: 28px 24px; }
 
 /* Tournament name badge */
 .t-logo-pill {
-  display: none;
+  display: none !important;
   background: var(--bg);
   border: 1px solid var(--border);
   color: var(--text-muted);
