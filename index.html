@@ -124,10 +124,10 @@
 (function () {
   // ── Load tournament meta from localStorage ──────────────
   function loadMeta() {
-    try { return JSON.parse(localStorage.getItem('pebblebeach2026_tournamentmeta') || 'null'); } catch(e) { return null; }
+    try { return JSON.parse(localStorage.getItem('golfpool_tournamentmeta') || 'null'); } catch(e) { return null; }
   }
   function loadSyncInfo() {
-    try { return JSON.parse(localStorage.getItem('pebblebeach2026_lastsync') || 'null'); } catch(e) { return null; }
+    try { return JSON.parse(localStorage.getItem('golfpool_lastsync') || 'null'); } catch(e) { return null; }
   }
 
   function timeSinceMs(ms) {

@@ -106,7 +106,7 @@
   }
 
   function loadMeta() {
-    try { return JSON.parse(localStorage.getItem('pebblebeach2026_tournamentmeta') || 'null'); } catch(e) { return null; }
+    try { return JSON.parse(localStorage.getItem('golfpool_tournamentmeta') || 'null'); } catch(e) { return null; }
   }
 
   // Proportions from base PRIZE_TABLE (keyed to $20M Pebble Beach purse)
@@ -125,8 +125,9 @@
     const meta = loadMeta();
     const name  = (meta && meta.name)  ? meta.name  : 'AT&T Pebble Beach Pro-Am';
     const purse = getLivePurse();
-    const nocut = TOURNAMENT.nocut ? ' · No Cut' : '';
-    const count = Object.keys(PRIZE_TABLE).length;
+    const noCut = meta ? meta.noCut : TOURNAMENT.nocut;
+    const nocut = noCut ? ' · No Cut' : '';
+    const count = (meta && meta.cutCount && !noCut) ? meta.cutCount : Object.keys(PRIZE_TABLE).length;
 
     document.getElementById('headerTName').textContent = name;
     document.getElementById('purseSubtitle').textContent =
@@ -144,9 +145,12 @@
 
   function renderTable() {
     const livePurse = getLivePurse();
+    const meta      = loadMeta();
+    const noCut     = meta ? meta.noCut : TOURNAMENT.nocut;
+    const maxPos    = (!noCut && meta && meta.cutCount) ? meta.cutCount : Object.keys(PRIZE_TABLE).length;
     const body      = document.getElementById('purseBody');
     body.innerHTML  = '';
-    const positions = Object.keys(PRIZE_TABLE).map(Number).sort((a, b) => a - b);
+    const positions = Object.keys(PRIZE_TABLE).map(Number).sort((a, b) => a - b).filter(p => p <= maxPos);
 
     positions.forEach(pos => {
       // Scale prize by actual purse; round to nearest $500
