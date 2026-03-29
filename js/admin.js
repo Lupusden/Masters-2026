@@ -17,11 +17,21 @@
   // ── Render ────────────────────────────────────────────────
   function render() {
     const players = getPlayers();
+    // Compute cutInfo first so we can sort made-cut players above missed-cut
+    const cutInfo = getCutInfo(players);
+
     const sorted  = [...players].sort((a, b) => {
       // WD players always last
       if (a.wd && !b.wd) return 1;
       if (!a.wd && b.wd) return -1;
       if (a.wd && b.wd) return a.name.localeCompare(b.name);
+      // Made-cut players always above missed-cut players
+      if (cutInfo.applies) {
+        const aMade = cutInfo.madeCut.has(a.name);
+        const bMade = cutInfo.madeCut.has(b.name);
+        if (aMade && !bMade) return -1;
+        if (!aMade && bMade) return 1;
+      }
       const sa = scoreToPar(a), sb = scoreToPar(b);
       if (sa === null && sb === null) return a.name.localeCompare(b.name);
       if (sa === null) return 1;
@@ -44,8 +54,6 @@
 
     const tbody = document.getElementById('adminBody');
     tbody.innerHTML = '';
-
-    const cutInfo = getCutInfo(players);
     let cutInserted = false;
     let wdInserted = false;
 
